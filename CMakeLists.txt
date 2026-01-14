@@ -1,16 +1,24 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(schedule
+project(termlander
     VERSION 0.1.0
     LANGUAGES CXX
 )
+
+add_subdirectory(thirdparty/sqlitecpp)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(schedule
+add_executable(termlander
     src/main.cpp
     src/date_util.cpp
     src/formatter.cpp
+)
+
+target_link_libraries(termlander PRIVATE SQLiteCpp
+  sqlite3 
+  pthread
+  dl
 )
