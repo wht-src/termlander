@@ -22,7 +22,7 @@ void print_month(int month, int year) {
   }
 
   for (int i = 1; i <= get_daycount(month); i++) {
-    if (get_weekday(i, month, year) == 6 || get_weekday(i, month, year) == 5) {
+    if (is_holiday(i, month, year)) {
       std::cout << termcolor::red;
     }
 
@@ -42,12 +42,13 @@ void print_month(int month, int year) {
       7 - get_weekday(get_daycount(month), month, year) - 1;
 
   int next_month = month + 1;
+  int target_year = year;
   if (next_month == 13) {
     next_month = 1;
+    target_year++;
   }
   for (int i = 1; i <= next_month_start_count; i++) {
-    if (get_weekday(i, next_month, year) == 6 ||
-        get_weekday(i, next_month, year) == 5) {
+    if (is_holiday(i, next_month, target_year)) {
       std::cout << termcolor::red;
     }
     std::cout << i << "  ";

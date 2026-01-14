@@ -62,3 +62,12 @@ int get_weekday(int day, int month, int year, Ctype type) {
 
   return (h % 7 + 7) % 7;
 }
+
+bool is_holiday(int day, int month, int year) {
+  // weekend
+  if (get_weekday(day, month, year) == 6 ||
+      get_weekday(day, month, year) == 5) {
+    return true;
+  }
+  return false;
+}
