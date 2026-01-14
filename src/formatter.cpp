@@ -47,7 +47,7 @@ void print_month(int month, int year) {
   }
   for (int i = 1; i <= next_month_start_count; i++) {
     if (get_weekday(i, next_month, year) == 6 ||
-        get_weekday(i, next_month, year)) {
+        get_weekday(i, next_month, year) == 5) {
       std::cout << termcolor::red;
     }
     std::cout << i << "  ";
