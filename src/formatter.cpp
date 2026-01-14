@@ -1,9 +1,11 @@
 #include "formatter.hpp"
 #include "date_util.hpp"
 #include <iostream>
+#include <termcolor/termcolor.hpp>
 
 void print_month(int month, int year) {
-  std::cout << "M  T  W  T  F  S  S" << std::endl;
+  std::cout << "M  T  W  T  F  " << termcolor::red << "S  S" << termcolor::reset
+            << std::endl;
 
   int last_month_day_count = get_daycount(month - 1);
   if (month == 1) {
@@ -20,6 +22,10 @@ void print_month(int month, int year) {
   }
 
   for (int i = 1; i <= get_daycount(month); i++) {
+    if (get_weekday(i, month, year) == 6 || get_weekday(i, month, year) == 5) {
+      std::cout << termcolor::red;
+    }
+
     if (1 <= i && i <= 9) {
       std::cout << i << "  ";
     } else {
@@ -29,12 +35,22 @@ void print_month(int month, int year) {
     if (get_weekday(i, month, year) == 6) {
       std::cout << std::endl;
     }
+    std::cout << termcolor::reset;
   }
 
   int next_month_start_count =
       7 - get_weekday(get_daycount(month), month, year) - 1;
 
+  int next_month = month + 1;
+  if (next_month == 13) {
+    next_month = 1;
+  }
   for (int i = 1; i <= next_month_start_count; i++) {
+    if (get_weekday(i, next_month, year) == 6 ||
+        get_weekday(i, next_month, year)) {
+      std::cout << termcolor::red;
+    }
     std::cout << i << "  ";
+    std::cout << termcolor::reset;
   }
 }

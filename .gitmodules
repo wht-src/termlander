@@ -1,3 +1,6 @@
 [submodule "thirdparty/sqlitecpp"]
 	path = thirdparty/sqlitecpp
 	url = https://github.com/SRombauts/SQLiteCpp
+[submodule "thirdparty/termcolor"]
+	path = thirdparty/termcolor
+	url = https://github.com/ikalnytskyi/termcolor
