@@ -42,6 +42,8 @@ project(termlander
 add_subdirectory(thirdparty/sqlitecpp)
 add_subdirectory(thirdparty/termcolor)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -55,7 +57,5 @@ set_project_warnings(termlander)
 
 target_link_libraries(termlander PRIVATE SQLiteCpp
   sqlite3 
-  pthread
-  dl
   termcolor
 )
