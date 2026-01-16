@@ -1,7 +1,9 @@
 #include "formatter.hpp"
+#include "store.hpp"
+#include <SQLiteCpp/Database.h>
 #include <chrono>
 
-int main() {
+void print_current_month() {
   auto now = std::chrono::zoned_time{std::chrono::current_zone(),
                                      std::chrono::system_clock::now()}
                  .get_local_time();
@@ -12,6 +14,12 @@ int main() {
   int year = static_cast<int>(current_date.year());
 
   print_month(static_cast<int>(month), year);
+}
+
+int main() {
+  print_current_month();
+
+  SQLite::Database store = createAndGetDBPath();
 
   return 0;
 }

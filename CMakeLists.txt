@@ -66,10 +66,14 @@ add_executable(termlander
     src/main.cpp
     src/date_util.cpp
     src/formatter.cpp
+    src/panic.cpp 
+    src/store.cpp
 )
 set_project_warnings(termlander)
 
-target_link_libraries(termlander PRIVATE SQLiteCpp
+target_link_libraries(termlander 
+  PRIVATE 
+  SQLiteCpp
   sqlite3 
   termcolor
 )
