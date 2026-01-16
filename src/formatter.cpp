@@ -83,4 +83,5 @@ void print_month(int month, int year) {
     std::cout << i << "  ";
   }
   std::cout << termcolor::reset;
+  std::cout << std::endl;
 }
