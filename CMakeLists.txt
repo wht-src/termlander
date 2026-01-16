@@ -59,12 +59,19 @@ FetchContent_Declare(
   GIT_TAG        9ec14deb24377cd24f381ff1ab1ef59228cd261b
 )
 
+FetchContent_Declare(
+  cpr
+  GIT_REPOSITORY https://github.com/libcpr/cpr
+  GIT_TAG        53e2d28696e542d4b32b7c42928395494bcafe64
+)
+
 FetchContent_MakeAvailable(termcolor)
 FetchContent_MakeAvailable(sqlitecpp)
+FetchContent_MakeAvailable(cpr)
 
 add_executable(termlander
     src/main.cpp
-    src/date_util.cpp
+    src/date.cpp
     src/formatter.cpp
     src/panic.cpp 
     src/store.cpp
