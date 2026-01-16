@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 4.0)
 
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
@@ -39,14 +39,28 @@ project(termlander
     LANGUAGES CXX
 )
 
-add_subdirectory(thirdparty/sqlitecpp)
-add_subdirectory(thirdparty/termcolor)
+include(FetchContent)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+FetchContent_Declare(
+  termcolor
+  GIT_REPOSITORY https://github.com/ikalnytskyi/termcolor
+  GIT_TAG        89f20096bef51de347ec6f99345f65147359bd7c
+)
+
+FetchContent_Declare(
+  sqlitecpp
+  GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp
+  GIT_TAG        9ec14deb24377cd24f381ff1ab1ef59228cd261b
+)
+
+FetchContent_MakeAvailable(termcolor)
+FetchContent_MakeAvailable(sqlitecpp)
 
 add_executable(termlander
     src/main.cpp
