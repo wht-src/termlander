@@ -1,3 +1,4 @@
+#include "client.hpp"
 #include "date.hpp"
 #include "formatter.hpp"
 #include "store.hpp"
@@ -13,6 +14,7 @@ int main() {
 
   auto store = createAndGetDBPath();
   setupDB(*store);
+  update_event_db(*store);
 
   return 0;
 }

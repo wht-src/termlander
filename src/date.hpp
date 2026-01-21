@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum class Ctype { Gregorian, Julian };
 
 struct Date {
@@ -13,3 +15,4 @@ int get_daycount(int month);
 int get_weekday(int day, int month, int year, Ctype type = Ctype::Julian);
 bool is_holiday(int day, int month, int year);
 Date get_today();
+std::string format_date(Date d);

@@ -1,10 +1,10 @@
 #include "store.hpp"
 
+#include "date.hpp"
 #include "panic.hpp"
 #include <SQLiteCpp/Database.h>
 #include <cstdlib>
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <string>
 
@@ -98,4 +98,23 @@ void setupDB(SQLite::Database &db) {
                     "name TEXT NOT NULL"
                     ");";
   db.exec(cmd);
+}
+
+bool checkYearExist(SQLite::Database &db, int year) {
+  try {
+    SQLite::Statement query(db,
+                            "SELECT 1 FROM events WHERE CAST(strftime('%Y', "
+                            "date) AS integer) = ? LIMIT 1;");
+    query.bind(1, year);
+
+    if (query.executeStep()) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (std::exception &e) {
+    std::string what(e.what());
+    panic("sqlite exception: " + what);
+    return false;
+  }
 }

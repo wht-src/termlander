@@ -65,9 +65,18 @@ FetchContent_Declare(
   GIT_TAG        53e2d28696e542d4b32b7c42928395494bcafe64
 )
 
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json
+  GIT_TAG        5ed07097faa6c50199c4a3b66e5ed37d4fbfccc2
+)
+
 FetchContent_MakeAvailable(termcolor)
 FetchContent_MakeAvailable(sqlitecpp)
 FetchContent_MakeAvailable(cpr)
+FetchContent_MakeAvailable(json)
+
+find_library(unistring unistring)
 
 add_executable(termlander
     src/main.cpp
@@ -75,12 +84,17 @@ add_executable(termlander
     src/formatter.cpp
     src/panic.cpp 
     src/store.cpp
+    src/client.cpp
+    src/locale.cpp
 )
 set_project_warnings(termlander)
 
 target_link_libraries(termlander 
   PRIVATE 
   SQLiteCpp
+  unistring
   sqlite3 
   termcolor
+  cpr
+  nlohmann_json::nlohmann_json
 )

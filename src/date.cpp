@@ -1,5 +1,6 @@
 #include "date.hpp"
 #include <chrono>
+#include <string>
 
 bool is_leap_year(int year) { return year % 4 == 0; }
 
@@ -90,4 +91,11 @@ Date get_today() {
   today.day = static_cast<int>(this_day);
 
   return today;
+}
+
+std::string format_date(Date d) {
+  std::string month = std::format("{:02d}", d.month);
+  std::string day = std::format("{:02d}", d.day);
+
+  return std::to_string(d.year) + "-" + month + "-" + day;
 }
