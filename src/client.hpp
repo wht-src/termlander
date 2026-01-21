@@ -11,4 +11,3 @@ struct Holiday {
 };
 
 std::vector<Holiday> get_events(int year, std::string countryCode);
-void update_event_db(SQLite::Database &db);

@@ -1,8 +1,6 @@
 #include "client.hpp"
 #include "date.hpp"
-#include "locale.hpp"
 #include "panic.hpp"
-#include "store.hpp"
 #include <SQLiteCpp/Database.h>
 #include <chrono>
 #include <cpr/cpr.h>
@@ -56,31 +54,4 @@ std::vector<Holiday> get_events(int year, std::string countryCode) {
   }
 
   return holidays;
-}
-
-void update_event_db(SQLite::Database &db) {
-  Date day = get_today();
-  // will not update
-  if (checkYearExist(db, day.year)) {
-    return;
-  }
-  std::string ccode = get_country_code();
-
-  if (ccode == "") {
-    return;
-  }
-
-  for (Holiday &h : get_events(day.year, ccode)) {
-    try {
-      SQLite::Statement query(db,
-                              "INSERT INTO events (date, name) VALUES (?, ?);");
-      query.bind(1, format_date(h.date));
-      query.bind(2, h.name);
-      query.exec();
-
-    } catch (std::exception &e) {
-      std::string what(e.what());
-      panic("sqlite exception: " + what);
-    }
-  }
 }

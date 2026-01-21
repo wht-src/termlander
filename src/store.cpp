@@ -1,6 +1,8 @@
 #include "store.hpp"
 
+#include "client.hpp"
 #include "date.hpp"
+#include "locale.hpp"
 #include "panic.hpp"
 #include <SQLiteCpp/Database.h>
 #include <cstdlib>
@@ -117,4 +119,34 @@ bool checkYearExist(SQLite::Database &db, int year) {
     panic("sqlite exception: " + what);
     return false;
   }
+}
+
+void storeEvent(SQLite::Database &db, int year, std::string ccode) {
+  for (Holiday &h : get_events(year, ccode)) {
+    try {
+      SQLite::Statement query(db,
+                              "INSERT INTO events (date, name) VALUES (?, ?);");
+      query.bind(1, format_date(h.date));
+      query.bind(2, h.name);
+      query.exec();
+
+    } catch (std::exception &e) {
+      std::string what(e.what());
+      panic("sqlite exception: " + what);
+    }
+  }
+}
+
+void update_event_db(SQLite::Database &db) {
+  Date day = get_today();
+  // will not update
+  if (checkYearExist(db, day.year)) {
+    return;
+  }
+  std::string ccode = get_country_code();
+
+  if (ccode == "") {
+    return;
+  }
+  storeEvent(db, day.year, ccode);
 }
