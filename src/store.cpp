@@ -86,7 +86,7 @@ std::unique_ptr<SQLite::Database> createAndGetDBPath() {
         dbPath, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
     return db;
   } catch (const std::exception &e) {
-    panic(std::string("SQLite exception: ") + e.what());
+    panic(std::string("sqlite exception: ") + e.what());
     std::exit(-1);
   }
 }
