@@ -1,4 +1,5 @@
 #include "date.hpp"
+#include <chrono>
 
 bool is_leap_year(int year) { return year % 4 == 0; }
 
@@ -70,4 +71,23 @@ bool is_holiday(int day, int month, int year) {
     return true;
   }
   return false;
+}
+
+Date get_today() {
+  auto now = std::chrono::zoned_time{std::chrono::current_zone(),
+                                     std::chrono::system_clock::now()}
+                 .get_local_time();
+
+  std::chrono::year_month_day current_date{
+      std::chrono::floor<std::chrono::days>(now)};
+
+  Date today;
+
+  unsigned int this_day = static_cast<unsigned int>(current_date.day());
+  unsigned int this_month = static_cast<unsigned int>(current_date.month());
+  today.year = static_cast<int>(current_date.year());
+  today.month = static_cast<int>(this_month);
+  today.day = static_cast<int>(this_day);
+
+  return today;
 }

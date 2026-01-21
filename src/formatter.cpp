@@ -1,27 +1,20 @@
 #include "formatter.hpp"
 #include "date.hpp"
-#include <chrono>
+#include <format>
 #include <iostream>
 #include <termcolor/termcolor.hpp>
+#include <vector>
 
 const std::vector<std::string> monthNames = {
     "January", "February", "March",     "April",   "May",      "June",
     "July",    "August",   "September", "October", "November", "December"};
 
 void print_month(int month, int year) {
-  auto now = std::chrono::zoned_time{std::chrono::current_zone(),
-                                     std::chrono::system_clock::now()}
-                 .get_local_time();
+  Date today = get_today();
 
-  std::chrono::year_month_day current_date{
-      std::chrono::floor<std::chrono::days>(now)};
+  std::string date = monthNames[static_cast<unsigned long>(today.month) - 1] +
+                     " " + std::to_string(today.year);
 
-  unsigned int today = static_cast<unsigned int>(current_date.day());
-  unsigned int this_month = static_cast<unsigned int>(current_date.month());
-  int this_year = static_cast<int>(current_date.year());
-
-  std::string date =
-      monthNames[this_month - 1] + " " + std::to_string(this_year);
   std::cout << std::format("{:^{}}", date, 20) << std::endl;
 
   std::cout << "M  T  W  T  F  " << termcolor::bright_red << "S  S"
@@ -50,8 +43,7 @@ void print_month(int month, int year) {
       std::cout << termcolor::bright_red;
     }
     // is it today
-    if (static_cast<int>(today) == i && month == static_cast<int>(this_month) &&
-        year == this_year) {
+    if (today.day == i && month == today.month && year == today.year) {
       std::cout << termcolor::on_blue;
     }
 
