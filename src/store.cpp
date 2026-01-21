@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <string>
 
 std::string format_fs_error(const std::filesystem::filesystem_error &e) {
@@ -56,7 +57,7 @@ void createPathIfNotExist(std::string p) {
 }
 
 // creates database if not exist
-SQLite::Database createAndGetDBPath() {
+std::unique_ptr<SQLite::Database> createAndGetDBPath() {
   std::string dbPath;
 
 #ifdef _WIN32
@@ -77,14 +78,24 @@ SQLite::Database createAndGetDBPath() {
 
   createPathIfNotExist(dbPath);
 
-  try {
-    SQLite::Database db(dbPath + "store.db3",
-                        SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    return db;
+  dbPath += "store.db3";
 
-  } catch (std::exception &e) {
-    std::string errmsg = e.what();
-    panic("SQLite exception: " + errmsg);
-    exit(-1);
+  try {
+    // something tells me this will bite me in the back sooner or later
+    auto db = std::make_unique<SQLite::Database>(
+        dbPath, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+    return db;
+  } catch (const std::exception &e) {
+    panic(std::string("SQLite exception: ") + e.what());
+    std::exit(-1);
   }
+}
+
+void setupDB(SQLite::Database &db) {
+  const char *cmd = "CREATE TABLE IF NOT EXISTS events ("
+                    "eid INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "date DATE NOT NULL,"
+                    "name TEXT NOT NULL"
+                    ");";
+  db.exec(cmd);
 }

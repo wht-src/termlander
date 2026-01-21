@@ -19,7 +19,8 @@ void print_current_month() {
 int main() {
   print_current_month();
 
-  SQLite::Database store = createAndGetDBPath();
+  auto store = createAndGetDBPath();
+  setupDB(*store);
 
   return 0;
 }
