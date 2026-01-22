@@ -7,7 +7,6 @@
 #include <SQLiteCpp/Database.h>
 #include <cstdlib>
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
