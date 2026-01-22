@@ -6,12 +6,12 @@
 #include <termcolor/termcolor.hpp>
 #include <vector>
 
-const std::vector<std::string> monthNames = {
+const std::vector<std::string> month_names = {
     "January", "February", "March",     "April",   "May",      "June",
     "July",    "August",   "September", "October", "November", "December"};
 
 void print_month(int month, int year, SQLite::Database &db, Date today) {
-  std::string date = monthNames[static_cast<unsigned long>(month) - 1] + " " +
+  std::string date = month_names[static_cast<unsigned long>(month) - 1] + " " +
                      std::to_string(today.year);
 
   std::vector<Holiday> holidays = get_month_events(db, month, year);

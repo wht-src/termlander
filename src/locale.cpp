@@ -19,19 +19,19 @@ std::string get_country_code() {
   return "";
 #else
   // untested~
-  wchar_t localeName[LOCALE_NAME_MAX_LENGTH];
-  if (GetUserDefaultLocaleName(localeName, LOCALE_NAME_MAX_LENGTH) > 0) {
-    std::wstring wstrLocale(localeName);
-    size_t hyphenPos = wstrLocale.find(L'-');
-    if (hyphenPos != std::wstring::npos &&
-        hyphenPos + 1 < wstrLocale.length()) {
-      std::wstring wstrCountryCode = wstrLocale.substr(hyphenPos + 1);
-      int len = WideCharToMultiByte(CP_UTF8, 0, wstrCountryCode.c_str(), -1,
+  wchar_t locale_name[LOCALE_NAME_MAX_LENGTH];
+  if (GetUserDefaultLocaleName(locale_name, LOCALE_NAME_MAX_LENGTH) > 0) {
+    std::wstring wstr_locale(locale_name);
+    size_t hyphen_pos = wstr_locale.find(L'-');
+    if (hyphen_pos != std::wstring::npos &&
+        hyphen_pos + 1 < wstr_locale.length()) {
+      std::wstring wstr_country_code = wstr_locale.substr(hyphen_pos + 1);
+      int len = WideCharToMultiByte(CP_UTF8, 0, wstr_country_code.c_str(), -1,
                                     NULL, 0, NULL, NULL);
-      std::string countryCode(len, '\0');
-      WideCharToMultiByte(CP_UTF8, 0, wstrCountryCode.c_str(), -1,
-                          &countryCode[0], len, NULL, NULL);
-      return countryCode;
+      std::string country_code(len, '\0');
+      WideCharToMultiByte(CP_UTF8, 0, wstr_country_code.c_str(), -1,
+                          &country_code[0], len, NULL, NULL);
+      return country_code;
     }
   }
   return "";

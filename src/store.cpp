@@ -39,7 +39,7 @@ std::string format_fs_error(const std::filesystem::filesystem_error &e) {
   return msg;
 }
 
-void createPathIfNotExist(std::string p) {
+void create_path_if_not_exist(std::string p) {
   namespace fs = std::filesystem;
 
   try {
@@ -61,7 +61,7 @@ void createPathIfNotExist(std::string p) {
 }
 
 // creates database if not exist
-std::unique_ptr<SQLite::Database> createAndGetDBPath() {
+std::unique_ptr<SQLite::Database> create_and_get_db_path() {
   std::string dbPath;
 
 #ifdef _WIN32
@@ -80,7 +80,7 @@ std::unique_ptr<SQLite::Database> createAndGetDBPath() {
   }
 #endif
 
-  createPathIfNotExist(dbPath);
+  create_path_if_not_exist(dbPath);
 
   dbPath += "store.db3";
 
@@ -95,7 +95,7 @@ std::unique_ptr<SQLite::Database> createAndGetDBPath() {
   }
 }
 
-void setupDB(SQLite::Database &db) {
+void setup_db(SQLite::Database &db) {
   const char *cmd = "CREATE TABLE IF NOT EXISTS events ("
                     "eid INTEGER PRIMARY KEY AUTOINCREMENT,"
                     "date DATE NOT NULL,"
@@ -104,7 +104,7 @@ void setupDB(SQLite::Database &db) {
   db.exec(cmd);
 }
 
-bool checkYearExist(SQLite::Database &db, int year) {
+bool check_year_exist(SQLite::Database &db, int year) {
   try {
     SQLite::Statement query(db,
                             "SELECT 1 FROM events WHERE CAST(strftime('%Y', "
@@ -123,7 +123,7 @@ bool checkYearExist(SQLite::Database &db, int year) {
   }
 }
 
-void storeEvent(SQLite::Database &db, int year, std::string ccode) {
+void store_event(SQLite::Database &db, int year, std::string ccode) {
   for (Holiday &h : get_events(year, ccode)) {
     try {
       SQLite::Statement query(db,
@@ -142,7 +142,7 @@ void storeEvent(SQLite::Database &db, int year, std::string ccode) {
 void update_event_db(SQLite::Database &db) {
   Date day = get_today();
   // will not update
-  if (checkYearExist(db, day.year)) {
+  if (check_year_exist(db, day.year)) {
     return;
   }
   std::string ccode = get_country_code();
@@ -150,7 +150,7 @@ void update_event_db(SQLite::Database &db) {
   if (ccode == "") {
     return;
   }
-  storeEvent(db, day.year, ccode);
+  store_event(db, day.year, ccode);
 }
 
 std::vector<Holiday> get_month_events(SQLite::Database &db, int month,

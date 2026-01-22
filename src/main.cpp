@@ -16,8 +16,8 @@ void print_cal(SQLite::Database &db, int month, int day_override) {
 }
 
 int main(int argc, char *argv[]) {
-  auto store = createAndGetDBPath();
-  setupDB(*store);
+  auto store = create_and_get_db_path();
+  setup_db(*store);
   update_event_db(*store);
 
   if (argc == 1) {
