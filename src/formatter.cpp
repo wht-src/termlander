@@ -10,22 +10,11 @@ const std::vector<std::string> monthNames = {
     "January", "February", "March",     "April",   "May",      "June",
     "July",    "August",   "September", "October", "November", "December"};
 
-bool is_holiday(std::vector<Holiday> holidays, int today) {
-  for (Holiday holiday : holidays) {
-    if (holiday.date.day == today) {
-      return true;
-    }
-  }
-  return false;
-}
+void print_month(int month, int year, SQLite::Database &db, Date today) {
+  std::string date = monthNames[static_cast<unsigned long>(month) - 1] + " " +
+                     std::to_string(today.year);
 
-void print_month(int month, int year, SQLite::Database &db) {
-  Date today = get_today();
-
-  std::string date = monthNames[static_cast<unsigned long>(today.month) - 1] +
-                     " " + std::to_string(today.year);
-
-  std::vector<Holiday> holidays = get_month_events(db, today.month, today.year);
+  std::vector<Holiday> holidays = get_month_events(db, month, year);
 
   std::cout << std::format("{:^{}}", date, 20) << std::endl;
 
@@ -51,16 +40,15 @@ void print_month(int month, int year, SQLite::Database &db) {
 
   // this month's dates
   for (int i = 1; i <= get_daycount(month); i++) {
-    if (is_holiday(i, month, year)) {
+    if (is_weekend(i, month, year)) {
+      std::cout << termcolor::bright_red;
+    }
+    if (is_holiday(i, holidays)) {
       std::cout << termcolor::bright_red;
     }
     // is it today
     if (today.day == i && month == today.month && year == today.year) {
       std::cout << termcolor::on_blue;
-    }
-    // is it a holiday
-    if (is_holiday(holidays, today.day)) {
-      std::cout << termcolor::bright_red;
     }
 
     std::cout << i;
@@ -92,4 +80,7 @@ void print_month(int month, int year, SQLite::Database &db) {
   }
   std::cout << termcolor::reset;
   std::cout << std::endl;
+  std::cout << std::endl;
+
+  print_if_holiday(today.day, holidays);
 }

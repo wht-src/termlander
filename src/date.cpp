@@ -1,5 +1,7 @@
 #include "date.hpp"
+#include "client.hpp"
 #include <chrono>
+#include <iostream>
 #include <string>
 
 bool is_leap_year(int year) { return year % 4 == 0; }
@@ -65,13 +67,30 @@ int get_weekday(int day, int month, int year, Ctype type) {
   return (h % 7 + 7) % 7;
 }
 
-bool is_holiday(int day, int month, int year) {
+bool is_weekend(int day, int month, int year) {
   // weekend
   if (get_weekday(day, month, year) == 6 ||
       get_weekday(day, month, year) == 5) {
     return true;
   }
   return false;
+}
+
+bool is_holiday(int day, std::vector<Holiday> holidays) {
+  for (Holiday holiday : holidays) {
+    if (holiday.date.day == day) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void print_if_holiday(int day, std::vector<Holiday> holidays) {
+  for (Holiday holiday : holidays) {
+    if (holiday.date.day == day) {
+      std::cout << holiday.name << std::endl;
+    }
+  }
 }
 
 Date get_today() {

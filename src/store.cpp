@@ -7,6 +7,7 @@
 #include <SQLiteCpp/Database.h>
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -154,25 +155,36 @@ void update_event_db(SQLite::Database &db) {
 
 std::vector<Holiday> get_month_events(SQLite::Database &db, int month,
                                       int year) {
-  SQLite::Statement query(
-      db, "SELECT name, CAST(STRFTIME('%d', date) AS INTEGER) AS day_int, "
-          "CAST(STRFTIME('%m', date) AS INTEGER) AS month_int, "
-          "CAST(STRFTIME('%y', date) AS INTEGER) AS year_int FROM events WHERE "
-          "month_int = ? AND year_int = ?");
-  query.bind(1, month);
-  query.bind(2, year);
+  char startDate[11]; // yyyy-mm-dd + null terminator
+  char endDate[11];
 
-  std::vector<Holiday> holidays;
+  snprintf(startDate, sizeof(startDate), "%04d-%02d-01", year, month);
+  int nextMonth = month == 12 ? 1 : month + 1;
+  int nextYear = month == 12 ? year + 1 : year;
+  snprintf(endDate, sizeof(endDate), "%04d-%02d-01", nextYear, nextMonth);
 
-  while (query.executeStep()) {
-    Holiday h;
-    h.name = query.getColumn(0).getString();
-    h.date.day = query.getColumn(1).getInt();
-    h.date.month = month;
-    h.date.year = year;
+  const char *sql = "SELECT name, STRFTIME('%d', date) FROM events "
+                    "WHERE date >= ? AND date < ?";
 
-    holidays.push_back(h);
+  try {
+    SQLite::Statement query(db, sql);
+    query.bind(1, std::string(startDate));
+    query.bind(2, std::string(endDate));
+
+    std::vector<Holiday> holidays;
+    while (query.executeStep()) {
+      Holiday h;
+      h.name = query.getColumn(0).getString();
+      h.date.day = query.getColumn(1).getInt();
+      h.date.month = month;
+      h.date.year = year;
+      holidays.push_back(h);
+    }
+    return holidays;
+
+  } catch (const std::exception &e) {
+    std::string what(e.what());
+    panic("sqlite exception: " + what);
+    return {};
   }
-
-  return holidays;
 }
