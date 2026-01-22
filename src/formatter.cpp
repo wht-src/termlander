@@ -1,5 +1,6 @@
 #include "formatter.hpp"
 #include "date.hpp"
+#include "store.hpp"
 #include <format>
 #include <iostream>
 #include <termcolor/termcolor.hpp>
@@ -9,11 +10,22 @@ const std::vector<std::string> monthNames = {
     "January", "February", "March",     "April",   "May",      "June",
     "July",    "August",   "September", "October", "November", "December"};
 
-void print_month(int month, int year) {
+bool is_holiday(std::vector<Holiday> holidays, int today) {
+  for (Holiday holiday : holidays) {
+    if (holiday.date.day == today) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void print_month(int month, int year, SQLite::Database &db) {
   Date today = get_today();
 
   std::string date = monthNames[static_cast<unsigned long>(today.month) - 1] +
                      " " + std::to_string(today.year);
+
+  std::vector<Holiday> holidays = get_month_events(db, today.month, today.year);
 
   std::cout << std::format("{:^{}}", date, 20) << std::endl;
 
@@ -45,6 +57,10 @@ void print_month(int month, int year) {
     // is it today
     if (today.day == i && month == today.month && year == today.year) {
       std::cout << termcolor::on_blue;
+    }
+    // is it a holiday
+    if (is_holiday(holidays, today.day)) {
+      std::cout << termcolor::bright_red;
     }
 
     std::cout << i;

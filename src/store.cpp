@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <vector>
 
 std::string format_fs_error(const std::filesystem::filesystem_error &e) {
   std::string msg;
@@ -149,4 +150,29 @@ void update_event_db(SQLite::Database &db) {
     return;
   }
   storeEvent(db, day.year, ccode);
+}
+
+std::vector<Holiday> get_month_events(SQLite::Database &db, int month,
+                                      int year) {
+  SQLite::Statement query(
+      db, "SELECT name, CAST(STRFTIME('%d', date) AS INTEGER) AS day_int, "
+          "CAST(STRFTIME('%m', date) AS INTEGER) AS month_int, "
+          "CAST(STRFTIME('%y', date) AS INTEGER) AS year_int FROM events WHERE "
+          "month_int = ? AND year_int = ?");
+  query.bind(1, month);
+  query.bind(2, year);
+
+  std::vector<Holiday> holidays;
+
+  while (query.executeStep()) {
+    Holiday h;
+    h.name = query.getColumn(0).getString();
+    h.date.day = query.getColumn(1).getInt();
+    h.date.month = month;
+    h.date.year = year;
+
+    holidays.push_back(h);
+  }
+
+  return holidays;
 }
